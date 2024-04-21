@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 // Function to swap two elements
 void swap(int *a, int *b) {
@@ -33,19 +34,46 @@ void quickSort(int arr[], int low, int high, int *comparisons) {
     }
 }
 
+// Function to generate a random pivot and place it at the end
+int randomPartition(int arr[], int low, int high) {
+    srand(time(NULL));
+    int random = low + rand() % (high - low);
+    swap(&arr[random], &arr[high]);
+    return partition(arr, low, high);
+}
+
+// Function to implement Randomized Quick Sort
+void randomizedQuickSort(int arr[], int low, int high) {
+    if (low < high) {
+        int pivotIndex = randomPartition(arr, low, high);
+        randomizedQuickSort(arr, low, pivotIndex - 1);
+        randomizedQuickSort(arr, pivotIndex + 1, high);
+    }
+}
+
 int main() {
-    int arr[] = {12, 11, 13, 5, 6, 7}; // Example array
+    // Example array
+    int arr[] = {12, 11, 13, 5, 6, 7};
     int n = sizeof(arr) / sizeof(arr[0]);
-    int comparisons = 0;
 
-    quickSort(arr, 0, n - 1, &comparisons);
-
-    printf("Sorted array: ");
+    // Regular Quick Sort
+    int comparisonsRegular = 0;
+    quickSort(arr, 0, n - 1, &comparisonsRegular);
+    printf("Sorted array using Quick Sort: ");
     for (int i = 0; i < n; i++)
         printf("%d ", arr[i]);
     printf("\n");
+    printf("Number of comparisons: %d\n", comparisonsRegular);
 
-    printf("Number of comparisons: %d\n", comparisons);
+    // Randomized Quick Sort
+    int arrRandomized[] = {12, 11, 13, 5, 6, 7}; // Reset the array
+    int comparisonsRandomized = 0;
+    randomizedQuickSort(arrRandomized, 0, n - 1);
+    printf("\nSorted array using Randomized Quick Sort: ");
+    for (int i = 0; i < n; i++)
+        printf("%d ", arrRandomized[i]);
+    printf("\n");
+    printf("Number of comparisons: %d\n", comparisonsRandomized);
 
     return 0;
 }
