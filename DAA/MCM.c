@@ -1,36 +1,56 @@
 #include <stdio.h>
 #include <limits.h>
 
-// Function to find optimal matrix chain multiplication
-void matrixChainOrder(int p[], int n) {
-    int m[n][n];
-    int i, j, k, L, q;
+int min(int a, int b) {
+    return (a < b) ? a : b;
+}
 
-    // Initialize the cost matrix
-    for (i = 1; i < n; i++)
-        m[i][i] = 0;
+// Function to print the optimal parenthesization of the matrix chain
+void printOptimalParenthesization(int s[][100], int i, int j) {
+    if (i == j)
+        printf("A%d", i);
+    else {
+        printf("(");
+        printOptimalParenthesization(s, i, s[i][j]);
+        printOptimalParenthesization(s, s[i][j] + 1, j);
+        printf(")");
+    }
+}
 
-    // Fill in the cost matrix
-    for (L = 2; L < n; L++) {
-        for (i = 1; i < n - L + 1; i++) {
-            j = i + L - 1;
-            m[i][j] = INT_MAX;
-            for (k = i; k <= j - 1; k++) {
-                q = m[i][k] + m[k + 1][j] + p[i - 1] * p[k] * p[j];
-                if (q < m[i][j])
-                    m[i][j] = q;
+int mChain(int p[], int n) {
+    int s[n][n]; // To store the split position
+
+    int dp[n][n];
+    for (int i = 0; i < n - 1; i++)
+        dp[i][i + 1] = 0;
+
+    for (int gap = 2; gap < n; gap++) {
+        for (int i = 0; i + gap < n; i++) {
+            int j = i + gap;
+            dp[i][j] = INT_MAX;
+            for (int k = i + 1; k < j; k++) {
+                int q = dp[i][k] + dp[k][j] + p[i] * p[k] * p[j];
+                if (q < dp[i][j]) {
+                    dp[i][j] = q;
+                    s[i][j] = k; // Store the split position
+                }
             }
         }
     }
 
-    printf("Minimum number of multiplications: %d\n", m[1][n - 1]);
+    printf("Minimum number of multiplications: %d\n", dp[0][n - 1]);
+
+    // Print the optimal parenthesization
+    printOptimalParenthesization(s, 0, n - 1);
+
+    return dp[0][n - 1];
 }
 
 int main() {
-    int arr[] = {13, 5, 89, 3, 34}; // Sequence of matrix dimensions
+    int arr[] = {10, 30, 5, 60}; // Sequence of matrix dimensions
     int n = sizeof(arr) / sizeof(arr[0]);
 
-    matrixChainOrder(arr, n);
+    printf("Minimum number of multiplications: %d\n", mChain(arr, n));
 
     return 0;
 }
