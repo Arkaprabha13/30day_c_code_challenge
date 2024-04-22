@@ -34,7 +34,7 @@ void printAllLCS(char X[], char Y[], int m, int n, char lcs[], int index, int le
         lcs[index - 1] = X[m - 1];
         printAllLCS(X, Y, m - 1, n - 1, lcs, index - 1, length - 1);
     }
-    else if (lcsLength(X, Y, m - 1, n) >= length && lcsLength(X, Y, m, n - 1) >= length
+    else if (lcsLength(X, Y, m - 1, n) >= length && lcsLength(X, Y, m, n - 1) >= length)
     {
         printAllLCS(X, Y, m - 1, n, lcs, index, length);
         printAllLCS(X, Y, m, n - 1, lcs, index, length);
