@@ -1,37 +1,60 @@
-#include <stdio.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include<limits.h>
 
-// Function to find the maximum of two integers
-int max(int a, int b) {
-    return (a > b) ? a : b;
+
+int max(int a,int b)
+{
+  return a>b?a:b;
 }
 
-// Function to solve the 0/1 Knapsack problem
-int knapsack(int W, int wt[], int val[], int n) {
-    int i, w;
-    int K[n + 1][W + 1];
 
-    // Build the table K[][] in bottom-up manner
-    for (i = 0; i <= n; i++) {
-        for (w = 0; w <= W; w++) {
-            if (i == 0 || w == 0)
-                K[i][w] = 0;
-            else if (wt[i - 1] <= w)
-                K[i][w] = max(val[i - 1] + K[i - 1][w - wt[i - 1]], K[i - 1][w]);
-            else
-                K[i][w] = K[i - 1][w];
-        }
+
+int kanpsack_01(int capacity,int weight[],int profit[],int n)
+{
+  int dp[n+1][capacity+1];
+  for(int i=0;i<=n;i++)
+  {
+    for(int j=0;j<=capacity;j++)
+    {
+      if(i==0||j==0)
+      {
+        dp[i][j]=0;
+      }
+      else if(weight[i-1]>j)
+      {
+        dp[i][j]=dp[i-1][j];
+      }
+      else
+      {
+        dp[i][j]=max(profit[i-1]+dp[i-1][j-weight[i-1]],dp[i-1][j]);
+      }
     }
-
-    // Return the maximum value that can be obtained
-    return K[n][W];
+  }
+  for(int i=0;i<=n;i++){
+    for(int c=0;c<capacity;c++)
+    {
+      printf("%d  ",dp[i][c]);
+    }
+    printf("\n");
+  }
+  return dp[n][capacity];
 }
 
-int main() {
-    int val[] = {60, 100, 120};
-    int wt[] = {10, 20, 30};
-    int W = 50; // Knapsack capacity
-    int n = sizeof(val) / sizeof(val[0]);
 
-    printf("Maximum value that can be obtained: %d\n", knapsack(W, wt, val, n));
-    return 0;
+
+
+
+int main()
+{
+  
+  
+  
+int val[] = { 10, 40, 30, 50 }; 
+int wt[] = { 5, 4, 6, 3 }; 
+int W = 10; 
+int n = 4;
+int ans=kanpsack_01(W, wt, val, n);
+printf("Ans is ->%d ",ans);
+  return 0;
 }
