@@ -52,10 +52,18 @@ int main()
 {
       int arr[] = {12, 11, 13, 5, 6, 7};
     int n = sizeof(arr) / sizeof(arr[0]);
-
+  double total_time=0;
+  
+  clock_t start=clock();
     // Regular Quick Sort
     int comparisonsRegular = 0;
     quicksort(arr, 0, n - 1, &comparisonsRegular);
+    clock_t end=clock();
+    double runtime = ((double)(end - start)) / CLOCKS_PER_SEC;
+        total_time += runtime;
+        
+        
+      printf("The time req -> %f\n",total_time);
     printf("Sorted array using Quick Sort: ");
     for (int i = 0; i < n; i++)
         printf("%d ", arr[i]);
