@@ -1,79 +1,67 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-
-// Function to swap two elements
-void swap(int *a, int *b) {
-    int temp = *a;
-    *a = *b;
-    *b = temp;
+#include<stdio.h>
+#include<stdlib.h>
+#include<limits.h>
+#include<time.h>
+void swap(int *a,int*b)
+{
+  int temp=*a;
+  *a=*b;
+  *b=temp;
 }
 
-// Function to partition the array and return the pivot index
-int partition(int arr[], int low, int high, int *comparisons) {
-    int pivot = arr[high]; // Choosing the last element as the pivot
-    int i = low - 1; // Index of smaller element
-
-    for (int j = low; j <= high - 1; j++) {
-        (*comparisons)++;
-        if (arr[j] < pivot) {
-            i++;
-            swap(&arr[i], &arr[j]);
-        }
+int partition(int *a,int l,int h,int *comparisions)
+{
+  int i=l-1;
+  // int j=high;
+  int pivot=a[h];
+  
+  for(int j=l;j<=h-1;j++)
+  {
+    (*comparisions)++;
+    if(a[j]<pivot)
+    {
+      i++;
+      swap(&a[i],&a[j]);
     }
-    swap(&arr[i + 1], &arr[high]);
-    return (i + 1);
+  }
+  swap(&a[i+1],&a[h]);
+  return i+1;
 }
 
-// Function to implement Quick Sort
-void quickSort(int arr[], int low, int high, int *comparisons) {
-    if (low < high) {
-        int pivotIndex = partition(arr, low, high, comparisons);
-        quickSort(arr, low, pivotIndex - 1, comparisons);
-        quickSort(arr, pivotIndex + 1, high, comparisons);
-    }
+int randomised(int *a,int low,int high,int *comparisions)
+{
+  srand(time(NULL));
+  int random=low+rand()%(high-low);
+  swap(&a[random],&a[high]);
+  return partition(a,low,high,comparisions);
 }
 
-// Function to generate a random pivot and place it at the end
-int randomPartition(int arr[], int low, int high) {
-    srand(time(NULL));
-    int random = low + rand() % (high - low);
-    swap(&arr[random], &arr[high]);
-    return partition(arr, low, high);
+void quicksort(int *a,int low,int high,int *comparisions)
+{
+  if(low<high)
+  {
+    int pivot=randomised(a,low,high,comparisions);
+    quicksort(a,low,pivot-1,comparisions);
+    quicksort(a,pivot+1,high,comparisions);
+    
+  }
 }
 
-// Function to implement Randomized Quick Sort
-void randomizedQuickSort(int arr[], int low, int high) {
-    if (low < high) {
-        int pivotIndex = randomPartition(arr, low, high);
-        randomizedQuickSort(arr, low, pivotIndex - 1);
-        randomizedQuickSort(arr, pivotIndex + 1, high);
-    }
-}
 
-int main() {
-    // Example array
-    int arr[] = {12, 11, 13, 5, 6, 7};
+int main()
+{
+      int arr[] = {12, 11, 13, 5, 6, 7};
     int n = sizeof(arr) / sizeof(arr[0]);
 
     // Regular Quick Sort
     int comparisonsRegular = 0;
-    quickSort(arr, 0, n - 1, &comparisonsRegular);
+    quicksort(arr, 0, n - 1, &comparisonsRegular);
     printf("Sorted array using Quick Sort: ");
     for (int i = 0; i < n; i++)
         printf("%d ", arr[i]);
     printf("\n");
     printf("Number of comparisons: %d\n", comparisonsRegular);
 
-    // Randomized Quick Sort
-    int arrRandomized[] = {12, 11, 13, 5, 6, 7}; // Reset the array
-    int comparisonsRandomized = 0;
-    randomizedQuickSort(arrRandomized, 0, n - 1);
-    printf("\nSorted array using Randomized Quick Sort: ");
-    for (int i = 0; i < n; i++)
-        printf("%d ", arrRandomized[i]);
-    printf("\n");
-    printf("Number of comparisons: %d\n", comparisonsRandomized);
-
-    return 0;
+  
+  return 0;
 }
